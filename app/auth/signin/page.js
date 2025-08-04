@@ -1,10 +1,14 @@
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { auth, signIn } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function SignIn() {
   const session = await auth();
-  console.log(session);
+
+  if (session?.user) {
+    redirect("/dashboard/profile"); // Redirect if already signed in
+  }
 
   return (
     <main className="min-h-[520px] flex justify-center bg-gray-50 py-8 px-2">
@@ -16,11 +20,11 @@ export default async function SignIn() {
           <form
             action={async () => {
               "use server";
-              await signIn("google");
+              await signIn("google", { callbackUrl: "/dashboard/profile" });  // Added callbackUrl here
             }}
             className="mb-4"
           >
-            <button className="w-full h-[3.2em] bg-black border-b-2 border-green-500 rounded-md flex justify-center items-center gap-2 hover:bg-gray-900 transition">
+            <button className="w-full h-[3.2em] bg-black border-b-2 border-green-500 rounded-md flex justify-center items-center gap-2 hover:bg-gray-900 transition shadow-lg animate-bounce">
               <FaGoogle className="text-2xl text-white" />
               <span className="text-white text-lg">Sign in with Google</span>
             </button>

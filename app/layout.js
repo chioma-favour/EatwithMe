@@ -1,8 +1,10 @@
-
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/component/navbar";
 import Footer from "@/component/footer";
+import { CartProvider } from "@/context/cartContext";
+import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react"; // ✅ Import SessionProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,12 +24,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar/>
-        {children}
-        <Footer/>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProvider> {/* ✅ Wrap Entire App in SessionProvider */}
+          <CartProvider>
+            <Navbar />
+            {children}
+            <Footer />
+            <Toaster position="top-right" reverseOrder={false} />
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

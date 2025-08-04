@@ -27,8 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }),
   pages: {
     signIn: "/auth/signin",
-    signOut:"/dashboard/pro"
-    
+    signOut: "/dashboard/pro",
   },
   callbacks: {
     session: ({ session }) => {
@@ -36,3 +35,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+
+// Export handlers for Next.js API Route
+export const { GET, POST } = handlers;

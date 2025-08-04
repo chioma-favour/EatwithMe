@@ -1,165 +1,189 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import Image from "next/image";
+import { db } from "@/config/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { useCart } from "@/context/cartContext";
+import toast from "react-hot-toast";
+import { FaWhatsapp } from "react-icons/fa";  
+import Link from "next/link";
 
-export default function Inter() {
-  const [cart, setCart] = useState([]);
 
-  const foodItems = [
-    {
-      id: 1,
-      name: "chicken/chips/milk",
-      price: 25000,
-      image: "/chop3.jpg",
-    },
-    {
-      id: 2,
-      name: "hot-dog/mustard ketchup",
-      price: 8000,
-      image: "/chop5.jpg",
-    },
-    {
-      id: 3,
-      name: "spicy fried chicken",
-      price: 10000,
-      image: "/chop4.jpg",
-    },
-    {
-      id: 4,
-      name: "cripsy potatoes/ketchup",
-      price: 8500,
-      image: "/chop1.jpg",
-    },
-    {
-      id: 5,
-      name: "cripsy fried chicken",
-      price: 12000,
-      image: "/chop2.jpg",
-    },
-    {
-      id: 6,
-      name: "spicy shawarma",
-      price: 5500,
-      image: "/chop6.jpg",
-    },
-  ];
+const chops = [
+  { id: 1, name: "Hotdog with Mustard", price: 5000, image: "/chop1.jpg" },
+  { id: 2, name: "Chicken & Chips", price: 7000, image: "/chop2.jpg" },
+  { id: 3, name: "Spicy Shawarma", price: 4500, image: "/chop3.jpg" },
+  { id: 4, name: "Fried Chicken", price: 6500, image: "/chop4.jpg" },
+  { id: 5, name: "Crispy Potatoes", price: 8500, image: "/chop5.jpg" },
+  { id: 6, name: "Mini Doughnuts", price: 5500, image: "/chop6.jpg" },
+];
 
-  const addToCart = (food) => {
-    setCart((prevCart) => {
-      const foodAdded= prevCart.find((item) => item.id === food.id);
+export default function Chop() {
+  const [showTraySummary, setShowTraySummary] = useState(false);
+  const { cart, addToCart, increase, decrease, remove, clearCart } = useCart();
 
-      if (foodAdded) {
-        return prevCart.map((item) =>
-          item.id === food.id
-            ?{ ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...food, quantity: 1 }];
-      }
-    });
-
-    alert(`${food.name} successfully added to cart`);
+  const handleAddToCart = (meal) => {
+    addToCart({ ...meal, quantity: 1 });
+    setShowTraySummary(true);
+    toast.success(`${meal.name} added to Tray`);
   };
 
-  const increaseQuantity = (id) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+  const closeTraySummary = () => {
+    setShowTraySummary(false);
   };
 
-  const decreaseQuantity = (id) => {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
-            : item
-        )
-    );
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  const removeItem = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const submitTray = async () => {
+    if (cart.length === 0) {
+      toast.error("Your tray is empty!");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "smallChopsOrders"), {
+        items: cart,
+        totalAmount: calculateTotal(),
+        timestamp: new Date(),
+      });
+
+      toast.success("TRAY RECEIVED! WAIT FOR A WHILE... OR CALL US:070818843329");
+      clearCart();
+      closeTraySummary();
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      toast.error("Failed to submit order.");
+    }
   };
 
   return (
-    <main className="bg-yellow-50 min-h-screen p-5">
-      <h1 className="text-3xl text-green-700 font-bold text-center mb-6 ">Small chops</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-5 px-4">
-        {foodItems.map((food) => (
+    <main className="bg-yellow-50 min-h-screen p-6">
+      <h1 className="text-3xl text-green-700 font-bold text-center mb-6">
+        Small Chops
+      </h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {chops.map((meal) => (
           <div
-            key={food.id}
-            className="bg-yellow-100 border border-gray-200 shadow-md rounded p-4 flex flex-col items-center"
+            key={meal.id}
+            className="bg-yellow-100 shadow-md rounded p-4 flex flex-col items-center"
           >
             <Image
-              src={food.image}
-              alt={food.name}
-              width={300}
-              height={150}
-              className="h-[300px] w-[250px] object-cover mx-auto"
+              src={meal.image}
+              alt={meal.name}
+              width={250}
+              height={300}
+              className="rounded mb-4 object-cover"
             />
-            <div className="text-green-400 text-center mt-3">
-              <p className="font-semibold">{food.name}</p>
-              <p className="mb-2">N{food.price.toLocaleString()}</p>
+            <div className="text-center text-green-700">
+              <p className="font-semibold">{meal.name}</p>
+              <p className="mb-2">N{meal.price.toLocaleString()}</p>
               <button
-                onClick={() => addToCart(food)}
-                className="bg-yellow-200 hover:bg-yellow-300 text-green-600 font-medium py-1 px-3 rounded-sm"
+                onClick={() => handleAddToCart(meal)}
+                className="bg-yellow-300 hover:bg-yellow-400 px-4 py-1 rounded text-sm shadow-lg animate-bounce"
               >
-                Add to Food
+                ADD TO TRAY
               </button>
             </div>
           </div>
         ))}
       </div>
 
-    
-      {cart.length > 0 && (
-        <div className="bg-white p-4 rounded shadow-md max-w-2xl mx-auto">
-          <h2 className="text-xl font-bold mb-4 text-green-600">Cart</h2>
-          <ul className="space-y-4">
-            {cart.map((item) => (
-              <li
-                key={item.id}
-                className="flex justify-between items-center text-gray-800"
-              >
-                <div>
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-500">
-                    N{item.price.toLocaleString()} x {item.quantity} = N
-                    {(item.price * item.quantity).toLocaleString()}
+      {/* Tray Summary Popup */}
+      {showTraySummary && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
+            <button
+              onClick={closeTraySummary}
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold"
+            >
+              &times;
+            </button>
+
+            <h2 className="text-xl font-bold mb-4 text-green-700">Tray Summary</h2>
+
+            {cart.length === 0 ? (
+              <p className="text-center text-gray-500">Your tray is empty</p>
+            ) : (
+              <>
+                <ul className="space-y-4">
+                  {cart.map((item) => (
+                    <li
+                      key={item.id}
+                      className="flex justify-between items-center text-gray-800 border-b pb-2"
+                    >
+                      <div>
+                        <p className="font-semibold">{item.name}</p>
+                        <p className="text-sm text-gray-500">
+                          N{item.price.toLocaleString()} x {item.quantity} = N
+                          {(item.price * item.quantity).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => increase(item.id)}
+                          className="bg-green-200 px-2 rounded text-sm"
+                        >
+                          +
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button
+                          onClick={() => decrease(item.id)}
+                          className="bg-yellow-200 px-2 rounded text-sm"
+                        >
+                          -
+                        </button>
+                        <button
+                          onClick={() => remove(item.id)}
+                          className="bg-red-200 px-2 rounded text-sm text-red-700"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 flex justify-between items-center">
+                  <p className="text-lg font-bold text-green-700">
+                    Total: N{calculateTotal().toLocaleString()}
                   </p>
                 </div>
 
-                <div className="flex gap-2 items-center">
+                <div className="mt-6 text-center">
                   <button
-                    onClick={() => increaseQuantity(item.id)}
-                    className="bg-green-200 px-2 rounded text-sm"
+                    onClick={submitTray}
+                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded text-lg"
                   >
-                    +
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    onClick={() => decreaseQuantity(item.id)}
-                    className="bg-yellow-200 px-2 rounded text-sm"
-                  >
-                    -
+                    Submit Tray
                   </button>
                   <button
-                    onClick={() => removeItem(item.id)}
-                    className="bg-red-200 px-2 rounded text-sm text-red-700"
+                    onClick={() => {
+                      closeTraySummary();
+                      window.location.href = "/cart";
+                    }}
+                    className="ml-4 text-green-700 underline text-sm"
                   >
-                    Remove
+                    Go to Cart Page
                   </button>
                 </div>
-              </li>
-            ))}
-          </ul>
+              </>
+            )}
+          </div>
         </div>
       )}
+          <Link
+              href="https://wa.me/2347081843329" // <-- Change this to your WhatsApp number
+              target="_blank"
+              className="fixed bottom-5 right-5 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center"
+            >
+              <FaWhatsapp className="text-3xl" />
+            
+            </Link>
     </main>
+    
   );
 }
