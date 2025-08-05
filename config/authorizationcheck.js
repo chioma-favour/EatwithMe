@@ -7,4 +7,7 @@ export async function Authorizationcheck(){
    if (!session?.user){
     redirect("/auth/signin");
    }
+   if(!session.user.email){
+      
+   }
 }

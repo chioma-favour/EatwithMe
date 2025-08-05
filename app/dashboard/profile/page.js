@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";  
 export default function Profile() {
-  const { data: session, status } = useSession();  // ✅ CORRECT
+  const { data: session, status } = useSession();  
 
   if (status === "loading") {
     return <p>Loading profile...</p>;

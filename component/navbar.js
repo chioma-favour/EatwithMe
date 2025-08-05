@@ -24,7 +24,8 @@ export default function Navbar() {
           <Link href="/dashboard/african"><li>AFRICAN</li></Link>
           <Link href="/dashboard/inter"><li>INTERCONTINENTAL</li></Link>
           <Link href="/dashboard/chop"><li>PASTRIES</li></Link>
-          <Link href="/dashboard/profile"><li>LOG-OUT</li></Link>
+          <Link href="/dashboard/profile"><li>SIGNOUT</li></Link>
+          <Link href="/auth/signin"><li>SIGNIN</li></Link>
           
           {/* Cart Icon */}
           <li className="relative cursor-pointer" onClick={() => setCartPopupOpen(!cartPopupOpen)}>
@@ -95,8 +96,8 @@ export default function Navbar() {
           <Link href="/dashboard/african" onClick={() => setMenuOpen(false)}><p>AFRICAN</p></Link>
           <Link href="/dashboard/inter" onClick={() => setMenuOpen(false)}><p>INTERCONTINENTAL</p></Link>
           <Link href="/dashboard/chop" onClick={() => setMenuOpen(false)}><p>PASTRIES</p></Link>
-          <Link href="/dashboard/profile" onClick={() => setMenuOpen(false)}><p>LOG-OUT</p></Link>
-          <Link href="/auth/signin" onClick={() => setMenuOpen(false)}><p>LOGIN</p></Link>
+          <Link href="/dashboard/profile" onClick={() => setMenuOpen(false)}><p>SIGNOUT</p></Link>
+          <Link href="/auth/signin" onClick={() => setMenuOpen(false)}><p>SIGNIN</p></Link>
         </motion.div>
       )}
     </div>

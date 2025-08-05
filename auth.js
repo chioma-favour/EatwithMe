@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }),
   pages: {
     signIn: "/auth/signin",
-    signOut:"/dashboard/pro"
+    signOut:"/dashboard/profile"
     
   },
   callbacks: {

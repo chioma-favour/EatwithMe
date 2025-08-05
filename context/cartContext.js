@@ -7,7 +7,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  // Load cart from Local Storage when component mounts
+  
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {

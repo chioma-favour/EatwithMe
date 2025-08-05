@@ -34,10 +34,10 @@ export default function PaymentPage() {
     }
 
     const totalAmount = calculateTotal();
-    const accountNumber = "7081843329"; // Your account number
+    const accountNumber = "7081843329"; 
     const bankName = "OPAY";
 
-    // Prepare Order Summary for WhatsApp
+  
     const orderDetails = cart
       .map(
         (item) =>
@@ -61,20 +61,21 @@ ${orderDetails}
 
 Total Amount: N${totalAmount.toLocaleString()}
 
+   COMPANPY'S POLICY
 Bank Details:
 Account Number: ${accountNumber}
 Bank Name: ${bankName}
 Account Name: OKOLI CHIOMA FAVOUR
 
-I will attach the payment proof image after this message.
-
-Thank you.`;
+ you will attach the payment proof image after this message.
+ Have a nice day.
+ Thank you.`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/2347081843329?text=${encodedMessage}`;
 
-    clearCart(); // Empty the cart
-    window.location.href = whatsappLink; // Redirect to WhatsApp
+    clearCart(); 
+    window.location.href = whatsappLink; 
   };
 
   return (
@@ -144,7 +145,7 @@ Thank you.`;
           <p>Account Number: <span className="font-mono">7081843329</span></p>
           <p>Bank: OPAY</p>
           <p className="mt-2 text-sm text-gray-600">
-            After payment, attach payment proof in the WhatsApp chat.
+            After payment,you should attach payment proof in the WhatsApp chat.
           </p>
         </div>
 

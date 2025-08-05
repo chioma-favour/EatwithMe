@@ -92,7 +92,7 @@ export default function Chop() {
         ))}
       </div>
 
-      {/* Tray Summary Popup */}
+      
       {showTraySummary && (
         <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md relative">
@@ -176,9 +176,9 @@ export default function Chop() {
         </div>
       )}
           <Link
-              href="https://wa.me/2347081843329" // <-- Change this to your WhatsApp number
+              href="https://wa.me/2347081843329" 
               target="_blank"
-              className="fixed bottom-5 right-5 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center"
+              className="fixed bottom-5 right-5 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center animated animate-bounce"
             >
               <FaWhatsapp className="text-3xl" />
             

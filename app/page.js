@@ -54,11 +54,11 @@ export default function Drinks() {
         ))}
       </div>
 
-      {/* WhatsApp Sticky Icon */}
+      
       <Link
-        href="https://wa.me/2347081843329" // <-- Change this to your WhatsApp number
+        href="https://wa.me/2347081843329"
         target="_blank"
-        className="fixed bottom-5 right-5 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center"
+        className="fixed bottom-5 right-5 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center animatednimate-bounce"
       >
         <FaWhatsapp className="text-3xl" />
         
